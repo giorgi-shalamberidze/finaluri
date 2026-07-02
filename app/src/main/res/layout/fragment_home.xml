@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".HomeFragment">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/gshsurnameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="enter your surname" />
+
+        <EditText
+            android:id="@+id/gshdateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="enter the day you were born" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/gshsalaryEditText"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="ხელფასი" />
+
+        <EditText
+            android:id="@+id/gshrentEditText"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="ქირა" />
+
+        <EditText
+            android:id="@+id/gshfoodEditText"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="კვება" />
+
+        <Button
+            android:id="@+id/gshsubmitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="submit" />
+
+        <TextView
+            android:id="@+id/gshwentWrongText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
