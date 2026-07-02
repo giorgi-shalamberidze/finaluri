@@ -1,5 +1,14 @@
 <resources>
-    <string name="app_name">finaluri</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Tasks</string>
+    <string name="add_task">Add task</string>
+    <string name="about">About</string>
+    <string name="about_description">A local task manager that stores tasks permanently with Room Database and updates the list automatically.</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_task">Delete task</string>
+    <string name="empty_tasks">No tasks yet</string>
+    <string name="save">Save</string>
+    <string name="task_description">Task Description</string>
+    <string name="task_title">Task Title</string>
+    <string name="tasks">Tasks</string>
+    <string name="title_required">Title is required</string>
 </resources>

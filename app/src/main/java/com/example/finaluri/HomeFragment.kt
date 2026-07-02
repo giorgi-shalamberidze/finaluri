@@ -1,65 +1,82 @@
 package com.example.finaluri
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finaluri.databinding.FragmentHomeBinding
-import android.graphics.Color
+import com.example.finaluri.ui.AddTaskDialogFragment
+import com.example.finaluri.ui.TaskAdapter
+import com.example.finaluri.viewmodel.TaskViewModel
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
+    private lateinit var taskAdapter: TaskAdapter
+    private lateinit var viewModel: TaskViewModel
 
-    lateinit var binding: FragmentHomeBinding
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gshsubmitButton.setOnClickListener { //ვიღებ ინფორმაციას//
-            val salary = gshsalaryEditText.text.toString()
-            val rent = gshrentEditText.text.toString()
-            val food = gshfoodEditText.text.toString()
-            val surname = gshsurnameText.text.toString()
-            val dayOfBorn = gshdateText.text.toString()
-
-            val salaryInt = salary.toIntOrNull() ?: 0 //მონაცემი გადამყავს ინტიჯერში თუ კი არსებობს//
-            val rentInt = rent.toIntOrNull() ?: 0
-
-            if (salary.isNullOrEmpty() || rent.isEmpty() || food.isEmpty() || surname.isEmpty() || dayOfBorn.isNullOrEmpty()) {
-                gshwentWrongText.text = "შეიყვანეთ ყველა მონაცემი"
-            } else if(salaryInt < rentInt) {
-                gshwentWrongText.text = "ხელფასი გადასახადზე ნაკლებია"
-                gshsalaryEditText.setTextColor(Color.RED)
-                gshrentEditText.setTextColor(Color.RED)
-            } else {
-                val bundle = Bundle()
-
-                bundle.putString("SALARY", salary)
-                bundle.putString("RENT", rent)
-                bundle.putString("FOOD", food)
-                bundle.putString("SURNAME", surname)
-                bundle.putString("DAYOFBORN", dayOfBorn)
-
-                val nextfragment = ProceedFragment()
-                nextfragment.arguments = bundle
-
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.placeHolder, nextfragment)
-                    .addToBackStack(null)
-                    .commit()
-
-            }
-        }
-
+        viewModel = ViewModelProvider(requireActivity())[TaskViewModel::class.java]
+        setupTaskList()
+        setupActions()
+        observeTasks()
     }
 
+    private fun setupTaskList() = with(binding) {
+        taskAdapter = TaskAdapter { task ->
+            viewModel.deleteTask(task)
+        }
 
+        tasksRecyclerView.apply {
+            adapter = taskAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(
+                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+            )
+        }
+    }
+
+    private fun setupActions() = with(binding) {
+        addTaskFab.setOnClickListener {
+            AddTaskDialogFragment().show(parentFragmentManager, AddTaskDialogFragment::class.java.name)
+        }
+    }
+
+    private fun observeTasks() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.tasks.collect { tasks ->
+                    taskAdapter.submitList(tasks)
+                    binding.emptyTasksTextView.visibility =
+                        if (tasks.isEmpty()) View.VISIBLE else View.GONE
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        binding.tasksRecyclerView.adapter = null
+        _binding = null
+        super.onDestroyView()
+    }
 }
